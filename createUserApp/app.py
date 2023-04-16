@@ -3,16 +3,30 @@ import requests
 
 from fastapi import FastAPI, Request,Form
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 import setting
 from Models.model import Database
 
 app = FastAPI()
 templates = Jinja2Templates(directory="Template/")
+app.mount("/static", StaticFiles(directory="static/"), name="static")
 
 @app.get("/register/{contractor_id}")
-async def form_get(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def form_get(request: Request,contractor_id: int):
+    db = Database(
+        setting.DB_HOST,
+        setting.DB_NAME,
+        setting.DB_USER,
+        setting.DB_PASSWORD
+    )
+    company=db.getComapnyname(contractor_id)
+    image_name = None
+    if str(company[0]) == "Expanding Possibilities":
+        image_name = "expanding.png"
+    elif str(company[0]) == "Villa Lyan":
+        image_name = "villa.png"
+    return templates.TemplateResponse("index.html", {"request": request,"image_name":image_name})
 
 @app.post("/register/{contractor_id}")
 async def form_post(request: Request,contractor_id: int,email: str = Form(...), username: str = Form(...), password: str = Form(...), confirm_password: str = Form(...)):
