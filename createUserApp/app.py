@@ -22,8 +22,8 @@ async def form_post(request: Request,contractor_id: int,email: str = Form(...), 
     if password != confirm_password:
         return templates.TemplateResponse("index.html", {"request": request, "error_message": "The passwords do not match.","form_data": form_data})
 
-    response = requests.post("https://test.abaanalystgroup.live/api/Auth/Register", json={"username": username, "password": password,"confirmPassword":confirm_password,
-                                                                                           "rol": ["Contractor"],"email":email,},verify=False)
+    response = requests.post("https://test.abaanalystgroup.live/api/auth/register", json={"username": username, "password": password,"confirmPassword":confirm_password,
+                                                                                           "rol": ["Contractor"],"email":email,})
     if response.status_code == 200:
         db = Database(
             setting.DB_HOST,
