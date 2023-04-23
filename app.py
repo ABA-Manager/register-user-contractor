@@ -36,7 +36,7 @@ async def form_post(request: Request,contractor_id: int,email: str = Form(...), 
     if password != confirm_password:
         return templates.TemplateResponse("index.html", {"request": request, "error_message": "The passwords do not match.","form_data": form_data})
 
-    response = requests.post("https://test.abaanalystgroup.live/api/auth/register", json={"username": username, "password": password,"confirmPassword":confirm_password,
+    response = requests.post(f"{setting.URL_COMPANY}/auth/register", json={"username": username, "password": password,"confirmPassword":confirm_password,
                                                                                            "rol": ["Contractor"],"email":email,})
     if response.status_code == 200:
         db = Database(
@@ -46,7 +46,7 @@ async def form_post(request: Request,contractor_id: int,email: str = Form(...), 
             setting.DB_PASSWORD
         )
         UserId=db.get_userid(username)
-        response2=requests.post("https://test.abaanalystgroup.live/api/servicelogbycontractor/createuser",json={"ContractorId":contractor_id,"UserId":str(UserId[0])})
+        response2=requests.post(f"{setting.URL_COMPANY}/servicelogbycontractor/createuser",json={"ContractorId":contractor_id,"UserId":str(UserId[0])})
         if response2.status_code==204:
             return {"message": "User registered successfully"}
         else:
