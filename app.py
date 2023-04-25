@@ -31,8 +31,8 @@ async def form_get(request: Request,contractor_id: int):
 @app.post("/register/{contractor_id}")
 async def form_post(request: Request,contractor_id: int,email: str = Form(...), username: str = Form(...), password: str = Form(...), confirm_password: str = Form(...)):
     form_data = {"username": username, "password": password,"confirmPassword":confirm_password,"email":email}
-    if not re.match(r"^(?=.*[.,])(?=.*[a-zA-Z])(?=.*\d)[\w.,$!%*?&]{8,}$", password):
-        return templates.TemplateResponse("index.html",{"request": request, "error_message": "The password must be at least 8 characters long and contain either '.' or ','.","form_data": form_data})
+    if not re.match(r"^(?=.*[.,*])(?=.*[a-zA-Z])(?=.*\d)[\w.,$!%*?&]{8,}$", password):
+        return templates.TemplateResponse("index.html",{"request": request, "error_message": "The password must be at least 8 characters long and contain either '.' or ',' or '*'.","form_data": form_data})
     if password != confirm_password:
         return templates.TemplateResponse("index.html", {"request": request, "error_message": "The passwords do not match.","form_data": form_data})
 
